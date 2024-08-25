@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Interaction Frontend</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #e9ecef;
+        margin: 0;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        color: #343a40;
+      }
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .response {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        white-space: pre-wrap; /* To keep formatting */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>API Interaction Interface</h1>
+    <div class="container">
+      <h2>Send POST Request</h2>
+      <label for="dataInput">Input Data (Comma-Separated):</label>
+      <input type="text" id="dataInput" placeholder="Example: A, 3, hello, b" />
+      <button onclick="postRequest()">Submit</button>
+      <div id="postResult" class="response"></div>
+
+      <h2>Send GET Request</h2>
+      <button onclick="getRequest()">Fetch Data</button>
+      <div id="getResult" class="response"></div>
+    </div>
+
+    <script>
+      async function postRequest() {
+        const input = document.getElementById("dataInput").value;
+        const items = input.split(",").map((item) => item.trim());
+
+        try {
+          const response = await fetch("http://127.0.0.1:5000/bfhl", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ data: items }),
+          });
+
+          const result = await response.json();
+          document.getElementById("postResult").textContent = JSON.stringify(
+            result,
+            null,
+            2
+          );
+        } catch (error) {
+          document.getElementById("postResult").textContent =
+            "Error: " + error.message;
+        }
+      }
+
+      async function getRequest() {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/bfhl", {
+            method: "GET",
+          });
+
+          const result = await response.json();
+          document.getElementById("getResult").textContent = JSON.stringify(
+            result,
+            null,
+            2
+          );
+        } catch (error) {
+          document.getElementById("getResult").textContent =
+            "Error: " + error.message;
+        }
+      }
+    </script>
+  </body>
+</html>
